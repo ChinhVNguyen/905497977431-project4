@@ -1,5 +1,5 @@
 export interface UpdateTodoRequest {
-  name: string
-  dueDate: string
+  name: string|undefined
+  dueDate: string|undefined
   done: boolean
 }

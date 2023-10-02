@@ -26,6 +26,7 @@ interface TodosProps {
 interface TodosState {
   todos: Todo[]
   newTodoName: string
+  newDueDate: string
   loadingTodos: boolean
 }
 
@@ -33,11 +34,16 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   state: TodosState = {
     todos: [],
     newTodoName: '',
+    newDueDate:'',
     loadingTodos: true
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ newTodoName: event.target.value })
+  }
+
+  handleDueDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newDueDate: event.target.value })
   }
 
   onEditButtonClick = (todoId: string) => {
@@ -49,11 +55,12 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
       const dueDate = this.calculateDueDate()
       const newTodo = await createTodo(this.props.auth.getIdToken(), {
         name: this.state.newTodoName,
-        dueDate
+        dueDate: this.state.newDueDate ? dateFormat(this.state.newDueDate, 'yyyy-mm-dd') as string : dueDate
       })
       this.setState({
         todos: [...this.state.todos, newTodo],
-        newTodoName: ''
+        newTodoName: '',
+        newDueDate:'',
       })
     } catch {
       alert('Todo creation failed')
@@ -116,7 +123,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   renderCreateTodoInput() {
     return (
       <Grid.Row>
-        <Grid.Column width={16}>
+        <Grid.Column width={16} style={{display:"flex",gap:"8px"}}>
           <Input
             action={{
               color: 'teal',
@@ -125,12 +132,23 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
               content: 'New task',
               onClick: this.onTodoCreate
             }}
-            fluid
             actionPosition="left"
             placeholder="To change the world..."
             onChange={this.handleNameChange}
+            value={this.state.newTodoName}
+            style={{width:"100%"}}
           />
+          <Input
+            type='date'
+            actionPosition="left"
+            onChange={this.handleDueDate}
+            value={this.state.newDueDate}
+            style={{border:"1px solid rgba(34,36,38,.15)",borderRadius:"4px"}}
+          />
+
+
         </Grid.Column>
+
         <Grid.Column width={16}>
           <Divider />
         </Grid.Column>

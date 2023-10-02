@@ -30,7 +30,7 @@ export class TodosAccess {
     return items as TodoItem[]
   }
 
-  async getTodo(todoId: string, userId: string): Promise<TodoItem> {
+  async getTodo(userId: string, todoId: string): Promise<TodoItem> {
     const result = await this.docClient
       .get({
         TableName: this.todosTable,
